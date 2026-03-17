@@ -1,0 +1,111 @@
+Cricket Analysis Project
+🔹 Project Title
+
+Number of Matches Played by Teams (IPL Analysis)
+
+🔹 Description
+
+This project analyzes the number of matches played by different IPL teams using data visualization. A horizontal bar chart is used to clearly compare team participation.
+
+🔹 Visualization Insight
+
+Mumbai Indians played the highest number of matches
+
+Followed by:
+
+Kings XI Punjab
+
+Chennai Super Kings
+
+Royal Challengers Bangalore
+
+Least matches:
+
+Rising Pune Supergiants
+
+Kochi Tuskers Kerala
+
+🔹 Tools Used
+
+Python 🐍
+
+Matplotlib 📊
+
+Pandas
+
+# Step 1: Import libraries
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Step 2: Create dataset (IPL Teams & Matches Played)
+teams = [
+    "Mumbai Indians", "Kings XI Punjab", "Chennai Super Kings",
+    "Royal Challengers Bangalore", "Kolkata Knight Riders",
+    "Delhi Daredevils", "Rajasthan Royals", "Sunrisers Hyderabad",
+    "Deccan Chargers", "Pune Warriors", "Gujarat Lions",
+    "Rising Pune Supergiant", "Kochi Tuskers Kerala",
+    "Rising Pune Supergiants"
+]
+
+matches = [85, 80, 78, 72, 70, 65, 55, 48, 45, 20, 15, 10, 8, 6]
+
+# Step 3: Convert into DataFrame
+df = pd.DataFrame({
+    "Team": teams,
+    "Matches Played": matches
+})
+
+# Step 4: Show dataset
+print("IPL Dataset:\n")
+print(df)
+
+# Step 5: Basic Analysis
+print("\nTotal Teams:", df.shape[0])
+print("Maximum Matches Played:", df["Matches Played"].max())
+print("Minimum Matches Played:", df["Matches Played"].min())
+
+# Step 6: Sort data for better visualization
+df_sorted = df.sort_values(by="Matches Played", ascending=True)
+
+# Step 7: Plot Horizontal Bar Chart
+plt.figure(figsize=(12, 7))
+plt.barh(df_sorted["Team"], df_sorted["Matches Played"])
+
+# Step 8: Add labels and title
+plt.xlabel("Number of Matches Played")
+plt.ylabel("IPL Teams")
+plt.title("Number of Matches Played by IPL Teams")
+
+# Step 9: Add values on bars
+for index, value in enumerate(df_sorted["Matches Played"]):
+    plt.text(value, index, str(value), va='center')
+
+# Step 10: Adjust layout
+plt.tight_layout()
+
+# Step 11: Show graph
+plt.show().
+
+
+## Conclusion
+This analysis highlights player consistency and match-winning factors.
+
+## Future Work
+- Add IPL 2025 dataset
+- Build interactive dashboards
+
+## References
+- ESPN Cricinfo
+- Kaggle Cricket Dataset
+
+## Contact
+Created by Dumpa Vaishnavi
+
+
+
+
+
+
+
+
+
