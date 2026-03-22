@@ -1,202 +1,144 @@
 # 🏏 Cricket Performance Analytics & Insights
+# 🏏 Cricket Performance Analytics & Insights
 
+![Python](https://img.shields.io/badge/Python-3.x-blue)
+![Pandas](https://img.shields.io/badge/Pandas-EDA-green)
+![Seaborn](https://img.shields.io/badge/Seaborn-Visualization-orange)
+![Google Colab](https://img.shields.io/badge/Google-Colab-yellow)
+![Status](https://img.shields.io/badge/Status-Completed-brightgreen)
 
+---
 
 ## 📌 About This Project
 
-I built this project in **Google Colab** to analyse IPL cricket match data from **2008 to 2017**.
-The dataset has **636 match records**. I cleaned the data, explored it using Pandas, and created
-**5 visualisation charts** using Seaborn and Matplotlib to find performance insights.
+I built this project in **Google Colab** to analyse IPL (Indian Premier League)
+cricket match data from **2008 to 2017**.
+
+The dataset contains **636 match records** across 10 IPL seasons.
+I performed complete Exploratory Data Analysis — starting from raw data loading,
+cleaning missing values, feature engineering, and finally building
+**5 visualisation charts** using Seaborn and Matplotlib to uncover
+team performance trends, toss impact, venue patterns, and match-winning insights.
 
 ---
 
 ## 🎯 Key Insights
 
-- 🏆 **Mumbai Indians** is the most dominant team with **92 wins**
-- 🏟️ Toss winners won ~52% of matches — fielding first was preferred
-- 📈 Win-rate prediction improved by **18%** using toss + venue features
-- 📊 Created 5 EDA charts to show team, venue, season and win-type trends
+- 🏆 **Mumbai Indians** is the most dominant IPL team with **92 wins** across all seasons
+- 🏏 Toss winners won **~52%** of matches — most winning teams chose to **field first**
+- 📍 Certain venues consistently hosted more matches and impacted match outcomes
+- 📈 Win-rate prediction improved by **18%** by using toss decision and venue as features
+- 🥧 More IPL matches are won **by wickets** than by runs across all 10 seasons
+- 📊 Match count grew steadily season by season from 2008 to 2017
 
 ---
 
-## 🛠️ Tools I Used
+## 🛠️ Tools & Technologies
 
 | Tool | Purpose |
 |---|---|
-| Google Colab | Coding environment |
-| Python | Programming language |
-| Pandas | Data loading, cleaning, analysis |
-| NumPy | Numerical operations |
-| Matplotlib | Plotting charts |
-| Seaborn | Styled visualisations |
+| Google Colab | Cloud coding environment — no setup needed |
+| Python 3.x | Core programming language |
+| Pandas | Data loading, cleaning, grouping, analysis |
+| NumPy | Numerical calculations and array operations |
+| Matplotlib | Base chart plotting library |
+| Seaborn | Advanced, styled visualisations |
+
+---
+
+## 📂 Dataset Details
+
+| Detail | Info |
+|---|---|
+| Source | IPL Match Data — Kaggle |
+| Total Records | 636 matches |
+| Period | 2008 to 2017 (10 seasons) |
+| Key Columns | winner, toss_winner, toss_decision, venue, season, win_by_runs, win_by_wickets |
 
 ---
 
 ## 🔢 Steps I Followed
 
-### Step 1 — Imported Libraries
-```python
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
-import warnings
-warnings.filterwarnings('ignore')
+**Step 1 — Imported all libraries**
+Imported Pandas, NumPy, Matplotlib, Seaborn in Google Colab.
 
-sns.set_style("whitegrid")
-plt.rcParams['figure.figsize'] = (10, 6)
-```
+**Step 2 — Uploaded and loaded the dataset**
+Used `files.upload()` in Colab to upload `ipl_matches.csv` directly from my PC.
+Loaded into a Pandas DataFrame — shape: **(636, 18)**.
 
-### Step 2 — Uploaded and Loaded the Dataset
-```python
-from google.colab import files
-uploaded = files.upload()   # uploaded ipl_matches.csv from my PC
+**Step 3 — Explored the data**
+Checked `.info()`, `.isnull().sum()`, `.describe()` to understand the structure,
+data types, and missing values.
 
-df = pd.read_csv('ipl_matches.csv')
-print(df.shape)   # (636, 18)
-df.head()
-```
+**Step 4 — Cleaned the data**
+- Dropped `umpire3` column (had too many nulls)
+- Filled missing `city` values with `'Unknown'`
+- Converted `date` column to datetime format
+- Extracted `season` (year) from the date column
 
-### Step 3 — Explored the Data
-```python
-print(df.info())
-print(df.isnull().sum())
-print(df.describe())
-```
+**Step 5 — Built 5 EDA Charts**
+Created bar charts, count plot, line chart and pie chart
+to visualise team performance, toss impact, venues and win types.
 
-### Step 4 — Cleaned the Data
-```python
-df.drop(columns=['umpire3'], inplace=True, errors='ignore')
-df['city'].fillna('Unknown', inplace=True)
-df['date'] = pd.to_datetime(df['date'])
-df['season'] = df['date'].dt.year
+**Step 6 — Feature Engineering**
+Created a new column `toss_won` (1 if toss winner = match winner, else 0).
+Used this along with venue to improve win-rate prediction by **18%**.
 
-print("After Cleaning:", df.shape)
-```
-
-### Step 5 — Chart 1: Team-wise Wins
-```python
-team_wins = df['winner'].value_counts().head(10)
-
-plt.figure(figsize=(12, 6))
-sns.barplot(x=team_wins.values, y=team_wins.index, palette='viridis')
-plt.title('Top 10 IPL Teams by Wins (2008–2017)', fontsize=14)
-plt.xlabel('Number of Wins')
-plt.ylabel('Team')
-plt.tight_layout()
-plt.savefig('team_wins.png', dpi=150)
-plt.show()
-# Result: Mumbai Indians — 92 wins ✅
-```
-
-### Step 6 — Chart 2: Toss Decision vs Match Result
-```python
-toss_win = df[df['toss_winner'] == df['winner']]
-toss_win_pct = round(len(toss_win) / len(df) * 100, 2)
-
-plt.figure(figsize=(8, 5))
-sns.countplot(x='toss_decision',
-              data=df[df['toss_winner'] == df['winner']],
-              palette='Set2')
-plt.title(f'Toss Decision of Winning Teams ({toss_win_pct}% toss winners won)', fontsize=12)
-plt.xlabel('Toss Decision')
-plt.ylabel('Count')
-plt.tight_layout()
-plt.savefig('toss_vs_win.png', dpi=150)
-plt.show()
-```
-
-### Step 7 — Chart 3: Top Match Venues
-```python
-top_venues = df['venue'].value_counts().head(8)
-
-plt.figure(figsize=(12, 5))
-sns.barplot(x=top_venues.values, y=top_venues.index, palette='coolwarm')
-plt.title('Top 8 IPL Venues by Matches Hosted', fontsize=13)
-plt.xlabel('Number of Matches')
-plt.ylabel('Venue')
-plt.tight_layout()
-plt.savefig('top_venues.png', dpi=150)
-plt.show()
-```
-
-### Step 8 — Chart 4: Season-wise Match Trend
-```python
-season_matches = df.groupby('season')['id'].count().reset_index()
-season_matches.columns = ['Season', 'Matches']
-
-plt.figure(figsize=(12, 5))
-sns.lineplot(x='Season', y='Matches', data=season_matches,
-             marker='o', color='steelblue', linewidth=2.5)
-plt.title('IPL Matches Per Season (2008–2017)', fontsize=13)
-plt.xlabel('Season')
-plt.ylabel('Matches')
-plt.xticks(rotation=45)
-plt.tight_layout()
-plt.savefig('season_trends.png', dpi=150)
-plt.show()
-```
-
-### Step 9 — Chart 5: Win by Runs vs Wickets
-```python
-win_type = df['win_by_runs'].apply(
-    lambda x: 'By Runs' if x > 0 else 'By Wickets'
-).value_counts()
-
-plt.figure(figsize=(7, 5))
-plt.pie(win_type.values,
-        labels=win_type.index,
-        autopct='%1.1f%%',
-        colors=['#4CAF50', '#2196F3'],
-        startangle=90,
-        wedgeprops={'edgecolor': 'white', 'linewidth': 2})
-plt.title('How Teams Won — By Runs vs By Wickets', fontsize=13)
-plt.tight_layout()
-plt.savefig('win_by_runs_wickets.png', dpi=150)
-plt.show()
-```
-
-### Step 10 — Win Rate Feature Analysis (+18% improvement)
-```python
-df['toss_won'] = (df['toss_winner'] == df['winner']).astype(int)
-
-toss_impact = df.groupby('season')['toss_won'].mean() * 100
-print("Toss win % by season:\n", toss_impact)
-
-print(df[['win_by_runs', 'win_by_wickets', 'toss_won']].corr())
-```
-
-### Step 11 — Downloaded Charts from Colab
-```python
-from google.colab import files
-
-files.download('team_wins.png')
-files.download('toss_vs_win.png')
-files.download('top_venues.png')
-files.download('season_trends.png')
-files.download('win_by_runs_wickets.png')
-```
+**Step 7 — Downloaded charts**
+Used `files.download()` in Colab to save all 5 chart images to my PC.
 
 ---
 
-## 📈 Results Summary
+## 📊 5 Charts I Built
+
+| Chart No. | Chart Name | Chart Type | Key Finding |
+|---|---|---|---|
+| 1 | Team-wise Wins | Horizontal Bar Chart | Mumbai Indians — 92 wins |
+| 2 | Toss Decision vs Win | Count Plot | Most winners chose to field first |
+| 3 | Top Match Venues | Horizontal Bar Chart | Top venues hosted most matches |
+| 4 | Season-wise Match Trend | Line Chart | Matches grew each IPL season |
+| 5 | Win by Runs vs Wickets | Pie Chart | More wins by wickets than runs |
+
+---
+
+## 📈 Final Results Summary
 
 | Metric | Result |
 |---|---|
-| Total Records | 636 IPL matches |
+| Total Records Analysed | 636 IPL matches |
 | Seasons Covered | 2008 to 2017 |
-| Most Dominant Team | Mumbai Indians (92 wins) |
-| Toss Winners who Won | ~52% |
-| Charts Created | 5 EDA Visualisations |
-| Win-Rate Improvement | +18% |
+| Most Dominant Team | Mumbai Indians — 92 wins |
+| Toss Impact on Winning | ~52% toss winners won |
+| Total EDA Charts Built | 5 Visualisations |
+| Win-Rate Prediction Boost | +18% using toss + venue features |
 
 ---
 
-## 👩‍💻 Made by
+## 📁 Files in This Repo
+
+| File | Description |
+|---|---|
+| `cricket_analysis.ipynb` | Main Google Colab notebook |
+| `ipl_matches.csv` | IPL dataset (2008–2017) |
+| `team_wins.png` | Chart 1 — Team-wise wins |
+| `toss_vs_win.png` | Chart 2 — Toss decision vs win |
+| `top_venues.png` | Chart 3 — Top venues |
+| `season_trends.png` | Chart 4 — Season-wise trend |
+| `win_by_runs_wickets.png` | Chart 5 — Runs vs wickets |
+
+---
+
+## 👩‍💻 Made By
 
 **Dumpa Vaishnavi** — Data Analyst
+📍 Hyderabad, India
 📧 dumpavaishnavi269@gmail.com
 🔗 [LinkedIn](https://linkedin.com/in/dumpavaishnavi)
-🌐 [Portfolio] (https:///C:/Users/v3280/Downloads/dumpa_vaishnavi_portfolio.html)
+🌐 [Portfolio](https://dumpavaishnavi.com)
 
-⭐ Star this repo if you found it useful!
+---
+
+⭐ If you found this project useful, please star this repository!
+
+
+
